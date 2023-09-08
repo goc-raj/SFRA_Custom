@@ -1,0 +1,135 @@
+<isset name="accountLocation" value="${pdict.CurrentSession.customer.profile.custom}" scope="page" />
+
+<form action="${URLUtils.url('Account-SaveProfile')}" class="edit-profile-form" method="POST" <isprint value="${pdict.profileForm.attributes}" encoding="off" />>
+
+    <div class="form-group
+        <isif condition="${pdict.profileForm.customer.firstname.mandatory === true}">required</isif>">
+        <label class="form-control-label" for="firstName">
+            <isprint value="${pdict.profileForm.customer.firstname.label}" encoding="htmlcontent" />
+        </label>
+        <input type="text" class="form-control" id="firstName"
+            <isprint value="${pdict.profileForm.customer.firstname.attributes}" encoding="off" />>
+        <div class="invalid-feedback"></div>
+    </div>
+
+    <div class="form-group
+        <isif condition="${pdict.profileForm.customer.lastname.mandatory === true}">required</isif>">
+        <label class="form-control-label" for="lastName">
+            <isprint value="${pdict.profileForm.customer.lastname.label}" encoding="htmlcontent" />
+        </label>
+        <input type="text" class="form-control" id="lastName"
+            <isprint value="${pdict.profileForm.customer.lastname.attributes}" encoding="off" />>
+        <div class="invalid-feedback"></div>
+    </div>
+
+    <div class="form-group
+        <isif condition="${pdict.profileForm.customer.phone.mandatory === true}">required</isif>">
+        <label class="form-control-label" for="phone">
+            <isprint value="${pdict.profileForm.customer.phone.label}" encoding="htmlcontent" />
+        </label>
+        <input type="text" class="form-control" id="phone"
+            <isprint value="${pdict.profileForm.customer.phone.attributes}" encoding="off" />>
+        <div class="invalid-feedback"></div>
+    </div>
+
+    <div class="form-group
+        <isif condition="${pdict.profileForm.customer.email.mandatory === true}">required</isif>">
+        <label class="form-control-label" for="email">
+            <isprint value="${pdict.profileForm.customer.email.label}" encoding="htmlcontent" />
+        </label>
+        <input type="email" class="form-control" id="email"
+            <isprint value="${pdict.profileForm.customer.email.attributes}" encoding="off" />>
+        <div class="invalid-feedback"></div>
+    </div>
+
+    <div class="form-group
+        <isif condition="${pdict.profileForm.customer.emailconfirm.mandatory === true}">required</isif>">
+        <label class="form-control-label" for="confirmEmail">
+            <isprint value="${pdict.profileForm.customer.emailconfirm.label}" encoding="htmlcontent" />
+        </label>
+        <input type="email" class="form-control" id="confirmEmail" <isprint value="${pdict.profileForm.customer.emailconfirm.attributes}" encoding="off" />>
+        <div class="invalid-feedback"></div>
+    </div>
+
+    <div class="form-group
+        <isif condition="${pdict.profileForm.login.password.mandatory === true}">required</isif>">
+        <label class="form-control-label" for="password">
+            <isprint value="${pdict.profileForm.login.password.label}" encoding="htmlcontent" />
+        </label>
+        <input type="password" class="form-control" id="password" <isprint value="${pdict.profileForm.login.password.attributes}" encoding="off" />>
+        <div class="invalid-feedback"></div>
+    </div>
+
+    <iscomment> Custom Code Start </iscomment>
+    <div class="form-group
+        <isif condition=" ${!!pdict.profileForm.customer.country.mandatory === true}">required</isif>">
+        <label class="form-control-label" for="addressCountry">
+            <isprint value="${pdict.profileForm.customer.country.label}" encoding="htmlcontent" />
+        </label>
+        <select class="form-control shippingCountry custom-select" id="addressCountry" <isprint
+            value=${pdict.profileForm.customer.country.attributes} encoding="off" />
+            autocomplete="shipping country"
+            aria-describedby="${lineItem ? lineItem.UUID : 'default'}Country">
+                <option label="-- select country --"></option>
+                <isloop items=${pdict.profileForm.customer.country.options} var="country">
+                    <option id="${country.id}" value="${country.htmlValue}" ${accountLocation.countryCode && country.id === accountLocation.countryCode.value ? 'selected' : ''}>${country.label}</option>
+                </isloop>
+        </select>
+        <div class="invalid-feedback" id="form-password-confirm-error"></div>
+    </div>
+
+    <div class="form-group
+        <isif condition=" ${!!pdict.profileForm.customer.states.stateCode.mandatory === true}">required</isif>">
+        <label class="form-control-label" for="addressState">
+            <isprint value="${pdict.profileForm.customer.states.stateCode.label}" encoding="htmlcontent" />
+        </label>
+        <select class="form-control shippingState custom-select" id="addressState" <isprint
+            value=${pdict.profileForm.customer.states.stateCode.attributes} encoding="off" />
+            autocomplete="shipping address-level1"
+            aria-describedby="${lineItem ? lineItem.UUID : 'default'}State">
+                <isloop items=${pdict.profileForm.customer.states.stateCode.options} var="state">
+                    <option id="${state.id}" value="${state.htmlValue}" ${accountLocation.stateCode && state.id === accountLocation.stateCode ? 'selected' : ''}>${state.label}</option>
+                </isloop>
+        </select>
+        <div class="invalid-feedback" id="form-password-confirm-error"></div>
+    </div>
+
+    <div class="form-group
+        <isif condition=" ${!!pdict.profileForm.customer.city.mandatory === true}">required</isif>">
+        <label class="form-control-label" for="registration-form-fname">
+            <isprint value="${pdict.profileForm.customer.city.label}" encoding="htmlcontent" />
+        </label>
+        <input type="text" class="form-control" id="registration-form-fname"
+            data-missing-error="${Resource.msg('error.message.required', 'forms', null)}"
+            data-range-error="${Resource.msg('error.message.50orless', 'forms', null)}"
+            aria-describedby="form-fname-error" <isprint value=${pdict.profileForm.customer.city.attributes}
+            encoding="off" />>
+        <div class="invalid-feedback" id="form-fname-error"></div>
+    </div>
+    <iscomment> Custom Code End </iscomment>
+
+    <input type="hidden" name="${pdict.csrf.tokenName}" value="${pdict.csrf.token}"/>
+    <div class="row">
+        <div class="col form-group">
+            <span class="${pdict.tracking_consent == null ? '' : 'consented' } tracking-consent"
+                data-url="${URLUtils.url('ConsentTracking-GetContent', 'cid', 'tracking_hint')}"
+                data-reject="${URLUtils.url('ConsentTracking-SetSession', 'consent', 'false')}"
+                data-accept="${URLUtils.url('ConsentTracking-SetSession', 'consent', 'true')}"
+                data-acceptText="${Resource.msg('button.consentTracking.yes', 'common', null)}"
+                data-rejectText="${Resource.msg('button.consentTracking.no', 'common', null)}"
+                data-heading="${Resource.msg('heading.consentTracking.track.consent', 'common', null)}"
+            >
+                ${Resource.msg('link.tracking.consent','account',null)}
+            </span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <a href="${URLUtils.url('Account-Show')}" class="btn btn-block btn-outline-primary">${Resource.msg('button.cancel','account',null)}</a>
+        </div>
+
+        <div class="col">
+            <button type="submit" name="save" class="btn btn-save btn-block btn-primary">${Resource.msg('button.save','account',null)}</button>
+        </div>
+    </div>
+</form>

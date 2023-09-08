@@ -1,0 +1,70 @@
+<isdecorate template="common/layout/page">
+
+    <isscript>
+        var assets = require('*/cartridge/scripts/assets.js');
+        assets.addJs('/js/giftCert.js');
+    </isscript>
+
+    <div class="hero slant-down login-banner">
+        <h1 class="page-title">${Resource.msg('txt.banner.giftcertificate.create', 'giftcertificate', null)}</h1>
+    </div>
+    <div class="container">
+        <!---Breadcrumbs--->
+        <isinclude template="components/breadcrumbs/pageBreadcrumbs" />
+        <div class="row justify-content-center ">
+            <div class="col-10 col-lg-6">
+                <h4>${Resource.msg('txt.heading.giftcertificate.create', 'giftcertificate', null)}</h4>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="card col-10 col-lg-6">
+                <form id="giftcertificate-create" action="${pdict.actionUrl}" method="POST"
+                    name="giftcertificate-create">
+                    <div class="form-group wishlist-error-search"
+                        data-error-msg="${Resource.msg('giftcertificate.create.error.msg', 'giftcertificate', null)}">
+                        <div class="" role="alert">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-control-label"
+                            for="giftcertificate-recipient">${Resource.msg('label.giftcertificate.recipient', 'giftcertificate', null)}
+                            </label>
+                        <input type="text" id="giftcertificate-recipient" class="form-control" name="giftCertTo"
+                            placeholder="${Resource.msg('placeholder.giftcertificate.recipient', 'giftcertificate', null)}"
+                            required>
+                        <div class="invalid-feedback"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-control-label"
+                            for="giftcertificate-email">${Resource.msg('label.giftcertificate.email', 'giftcertificate', null)}
+                            </label>
+                        <input type="email" id="giftcertificate-email" class="form-control" name="giftCertEmail"
+                            placeholder="${Resource.msg('placeholder.giftcertificate.email', 'giftcertificate', null)}"
+                            required>
+                        <div class="invalid-feedback"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-control-label"
+                            for="giftcertificate-amount">${Resource.msg('label.giftcertificate.amount', 'giftcertificate', null)}
+                            </label>
+                        <input type="number" id="giftcertificate-amount" class="form-control" name="giftCertAmount"
+                            placeholder="${Resource.msg('placeholder.giftcertificate.amount', 'giftcertificate', null)}"
+                            required>
+                        <div class="invalid-feedback"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-control-label"
+                            for="giftcertificate-message">${Resource.msg('label.giftcertificate.message', 'giftcertificate', null)}
+                            </label>
+                        <textarea class="form-control" id="giftcertificate-message" rows="3" cols="60" maxlength="200" 
+                            name="giftCertMessage" placeholder="${Resource.msg('placeholder.giftcertificate.message','giftcertificate',null)}">
+                            </textarea>
+                        <div class="invalid-feedback"></div>
+                    </div>
+                    <button type="submit" value="${URLUtils.url('GiftCertificate-AddToCart')}"
+                        class="btn btn-block btn-primary add-giftcert-to-cart">${Resource.msg('button.create.giftcertificate', 'giftcertificate', null)}</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</isdecorate>

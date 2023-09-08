@@ -1,0 +1,39 @@
+<isdecorate template="common/layout/page">
+    <iscomment> <isscript>
+        var assets = require('*/cartridge/scripts/assets.js');
+        assets.addCss('/css/wishlist.css');
+        assets.addJs('/js/wishlist.js');
+        assets.addCss('/css/login.css');
+    </isscript> </iscomment>
+    <div class="hero slant-down login-banner">
+        <h1 class="page-title">${Resource.msg('txt.banner.giftcertificate.search', 'giftcertificate', null)}</h1>
+    </div>
+    <div class="container">
+        <!---Breadcrumbs--->
+        <isinclude template="components/breadcrumbs/pageBreadcrumbs"/>
+        <div class="row justify-content-center ">
+            <div class="col-10 col-lg-6">
+                <h4>${Resource.msg('txt.heading.giftcertificate.search', 'giftcertificate', null)}</h4>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="card col-10 col-lg-6">
+                <form action="${pdict.actionUrl}" id="giftcertificate-search" method="POST" name="giftcertificate-search">
+                    <div class="form-group wishlist-error-search" data-error-msg="${Resource.msg('giftcertificate.search.error.msg', 'giftcertificate', null)}">
+                        <div class="" role="alert">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-control-label" for="giftcertificate-search-code-name">
+                            ${Resource.msg('label.input.giftcertificate.search.code.name', 'giftcertificate', null)}
+                        </label>
+                        <input type="text" id="giftcertificate-search-code-name" class="form-control" name="searchCode">
+                        <div class="invalid-feedback"></div>
+                    </div>
+                    <input type="hidden" name="${pdict.csrf.tokenName}" value="${pdict.csrf.token}"/>
+                    <button type="submit" class="btn btn-block btn-primary">${Resource.msg('button.search.giftcertificate', 'giftcertificate', null)}</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</isdecorate>

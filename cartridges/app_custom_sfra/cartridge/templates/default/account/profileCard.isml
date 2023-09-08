@@ -1,0 +1,43 @@
+<div class="card">
+    <div class="card-header clearfix">
+        <h2 class="pull-left profile-header">${Resource.msg('label.profile','account',null)}</h2>
+        <isif condition="${!pdict.account.isExternallyAuthenticated}">
+            <a href="${URLUtils.url('Account-EditProfile')}" class="pull-right" aria-label="${Resource.msg('label.profile.edit','account',null)}">${Resource.msg('link.edit','account',null)}</a>
+        </isif>
+    </div>
+    <div class="card-body">
+        <dl>
+            <dt>${Resource.msg('label.profile.firstname','account',null)}</dt>
+            <dd>${pdict.account.profile.firstName}</dd>
+        </dl>
+        <dl>
+            <dt>${Resource.msg('label.profile.lastname','account',null)}</dt>
+            <dd>${pdict.account.profile.lastName}</dd>
+        </dl>
+        <dl>
+            <dt>${Resource.msg('label.profile.email','account',null)}</dt>
+            <dd>${pdict.account.profile.email}</dd>
+        </dl>
+        <isif condition="${!pdict.account.isExternallyAuthenticated}">
+            <dl>
+                <dt>${Resource.msg('label.profile.phone','account',null)}</dt>
+                <dd>${pdict.account.profile.phone}</dd>
+            </dl>
+        </isif>
+        <iscomment> Custom Code Start </iscomment>
+        <dl>
+            <dt>${Resource.msg('label.profile.countryCode','account',null)}</dt>
+            <dd>${pdict.account.profile.countryCode}</dd>
+        </dl>
+        <dl>
+            <dt>${Resource.msg('label.profile.stateCode','account',null)}</dt>
+            <dd>${pdict.account.profile.stateCode}</dd>
+        </dl>
+        <dl>
+            <dt>${Resource.msg('label.profile.city','account',null)}</dt>
+            <dd>${pdict.account.profile.city}</dd>
+        </dl>
+        <iscomment> Custom Code End </iscomment>
+
+    </div>
+</div>
