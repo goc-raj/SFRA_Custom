@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<form xmlns="http://www.demandware.com/xml/form/2008-04-19" secure="false">
+    <group formid="egiftcard">
+        <field 
+            formid="gcRecipientName" 
+            label="Reciepient:" 
+            mandatory="true" 
+            max-length="50" 
+            missing-error="error.message.required"
+            range-error="error.message.8_255characters"
+            type="string"/>
+
+        <field 
+            formid="gcRecipientEmail" 
+            label="giftcards.recipientsemail" 
+            type="string" 
+            mandatory="true" 
+            missing-error="error.message.required"
+            range-error="error.message.8_255characters"
+            max-length="50" 
+            value-error="profile.usernametaken"/>
+        <field 
+            formid="gcAmount" 
+            label="giftcards.amount" 
+            type="string" 
+            mandatory="true" 
+            missing-error="error.message.required"
+            range-error="error.message.8_255characters"
+            min-length="1" 
+            max-length="6"/>
+        <field 
+            formid="gcMessage" 
+            label="giftcards.message" 
+            type="string" 
+            mandatory="false" 
+            max-length="50"/>
+    </group>
+</form>
+

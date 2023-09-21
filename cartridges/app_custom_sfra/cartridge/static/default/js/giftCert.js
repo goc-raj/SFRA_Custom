@@ -34,7 +34,7 @@ function submitGiftCertCode() {
       data: 'giftCertCode=' + $giftcertcode,
       success: function success(data) {
         if (data.error) {
-          $('.coupon-error-message').show();
+          $('.coupon-error-message').show().append(data.errorMessage);
           $('#pmt').show();
         } else {
           $('.giftcert-message').empty().show().append(data.message);
@@ -42,12 +42,9 @@ function submitGiftCertCode() {
             $('#pmt').hide();
             // var paymentMethod = "<input type='hidden' class='form-control' name='${pdict.forms.billingForm.paymentMethod.htmlName}' value='GIFT_CERTIFICATE'>";
             // $("#giftForm").prepend(paymentMethod);
-            $('.shipping-total-cost').text(0.00);
-            $('.tax-total').text(0.00);
-            $('.sub-total').text(0.00);
-            $('.grand-total-sum').text(0.00);
           }
         }
+
         $.spinner().stop();
       },
       error: function error(err) {
@@ -84,85 +81,63 @@ module.exports = {
 function handlePostCartAdd(response) {
   $('.minicart').trigger('count:update', response);
   var messageType = response.error ? 'alert-danger' : 'alert-success';
-  // show add to cart toast
-  if (response.newBonusDiscountLineItem && Object.keys(response.newBonusDiscountLineItem).length !== 0) {
-    chooseBonusProducts(response.newBonusDiscountLineItem);
-  } else {
-    if ($('.add-to-cart-messages').length === 0) {
-      $('body').append('<div class="add-to-cart-messages"></div>');
-    }
-    $('.add-to-cart-messages').append('<div class="alert ' + messageType + ' add-to-basket-alert text-center" role="alert">' + response.message + '</div>');
-    setTimeout(function () {
-      $('.add-to-basket-alert').remove();
-    }, 5000);
+  if ($('.add-to-cart-messages').length === 0) {
+    $('body').append('<div class="add-to-cart-messages"></div>');
+  }
+  $('.add-to-cart-messages').append('<div class="alert ' + messageType + ' add-to-basket-alert text-center" role="alert">' + response.message + '</div>');
+  setTimeout(function () {
+    $('.add-to-basket-alert').remove();
+  }, 5000);
+}
+
+/**
+ * Makes a call to the server to report the event of adding an item to the cart
+ *
+ * @param {string | boolean} url - a string representing the end point to hit so that the event can be recorded, or false
+ */
+function miniCartReportingUrl(url) {
+  if (url) {
+    $.ajax({
+      url: url,
+      method: 'GET',
+      success: function success() {
+        // reporting urls hit on the server
+      },
+      error: function error() {
+        // no reporting urls hit on the server
+      }
+    });
   }
 }
 module.exports = {
   addGiftCertToCart: function addGiftCertToCart() {
-    $(document).on('click', 'button.add-giftcert-to-cart', function () {
+    $(document).on('submit', '.giftCardForm', function (e) {
       var addToCartUrl;
       var pid;
-      var pidsObj;
-      var setPids;
+      e.preventDefault();
       $('body').trigger('product:beforeAddToCart', this);
-
-      /*
-      if ($('.set-items').length && $(this).hasClass('add-to-cart-global')) {
-          setPids = [];
-           $('.product-detail').each(function () {
-              if (!$(this).hasClass('product-set-detail')) {
-                  setPids.push({
-                      pid: $(this).find('.product-id').text(),
-                      qty: $(this).find('.quantity-select').val(),
-                      options: getOptions($(this))
-                  });
-              }
-          });
-          pidsObj = JSON.stringify(setPids);
-      }
-       pid = getPidValue($(this));
-       var $productContainer = $(this).closest('.product-detail');
-      if (!$productContainer.length) {
-          $productContainer = $(this).closest('.quick-view-dialog').find('.product-detail');
-      }
-      */
-
-      addToCartUrl = $('.add-giftcert-to-cart-url').val();
-      /*
-      console.log('addToCartUrl: ' + addToCartUrl);
-      console.log('giftCertTo: ' + $('#giftcertificate-recipient').val());
-      console.log('giftCertEmail: ' + $('#giftcertificate-email').val());
-      console.log('giftCertAmount: ' + $('#giftcertificate-amount').val());
-      console.log('giftCertMessage: ' + $('#giftcertificate-message').val());
-      */
-
-      var form = {
-        pid: pid,
-        pidsObj: pidsObj,
-        childProducts: [],
-        quantity: 1,
-        giftCertTo: $('#giftcertificate-recipient').val(),
-        giftCertEmail: $('#giftcertificate-email').val(),
-        giftCertAmount: $('#giftcertificate-amount').val(),
-        giftCertMessage: $('#giftcertificate-message').val()
-      };
-
-      /*
-      if (!$('.bundle-item').length) {
-          form.options = getOptions($productContainer);
-      }
-      */
-
+      var formData = $('.giftCardForm').serialize();
+      addToCartUrl = $('.add-to-cart-url').val();
+      pid = $('#prodId').val();
+      // var form = {
+      //     pid: pid,
+      //     pidsObj: {},
+      //     childProducts: [],
+      //     quantity: 1,
+      //     formData: formData
+      // };
+      var form = $('.giftCardForm');
       $(this).trigger('updateAddToCartFormData', form);
       if (addToCartUrl) {
         $.ajax({
           url: addToCartUrl,
           method: 'POST',
-          data: form,
+          data: form.serialize(),
           success: function success(data) {
             handlePostCartAdd(data);
             $('body').trigger('product:afterAddToCart', data);
             $.spinner().stop();
+            miniCartReportingUrl(data.reportingURL);
           },
           error: function error() {
             $.spinner().stop();
@@ -170,7 +145,8 @@ module.exports = {
         });
       }
     });
-  }
+  },
+  miniCartReportingUrl: miniCartReportingUrl
 };
 
 /***/ }),

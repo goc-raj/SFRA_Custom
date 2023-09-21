@@ -28,6 +28,8 @@ function placeOrder(req, res, next) {
   var COHelpers = require('*/cartridge/scripts/checkout/checkoutHelpers');
   var validationHelpers = require('*/cartridge/scripts/helpers/basketValidationHelpers');
   var addressHelpers = require('*/cartridge/scripts/helpers/addressHelpers');
+  var GiftCertificateMgr = require('dw/order/GiftCertificateMgr');
+  var collections = require('*/cartridge/scripts/util/collections');
   var currentBasket = BasketMgr.getCurrentBasket();
   if (!currentBasket) {
     res.json({
@@ -108,6 +110,11 @@ function placeOrder(req, res, next) {
 
   // Re-calculate the payments.
   var calculatedPaymentTransactionTotal = COHelpers.calculatePaymentTransaction(currentBasket);
+  // if ('useGiftCard' in currentBasket.custom && 'gcCode' in currentBasket.custom && currentBasket.custom.gcCode) {
+  //   COCHelper.updatePaymentTransaction(currentBasket);
+  // } else {
+  //   COHelpers.calculatePaymentTransaction(currentBasket);
+  // }
   if (calculatedPaymentTransactionTotal.error) {
     res.json({
       error: true,
@@ -174,6 +181,34 @@ function placeOrder(req, res, next) {
     this.emit('route:Complete', req, res);
     return;
   }
+
+  // Custom Cartridge Code Start
+  var products = order.getAllProductLineItems();
+  var gCertificates = [];
+  var flag = false;
+  collections.forEach(products, function (item) {
+      if (item.productID == 'Gift_Certi_Form_Red') {
+          flag = true;
+          gCertificates.push(item);
+      }
+  });
+
+  if (flag) {
+    var profile = req.currentCustomer.profile;
+    for (let i = 0; i < gCertificates.length; i++) {
+        Transaction.begin();
+        var createdGiftCertificate = GiftCertificateMgr.createGiftCertificate(gCertificates[i].priceValue);
+        createdGiftCertificate.setOrderNo(order.getCurrentOrderNo());
+        createdGiftCertificate.setRecipientEmail(gCertificates[i].custom.gcRecipientEmail);
+        createdGiftCertificate.setRecipientName(gCertificates[i].custom.gcRecipientName);
+        createdGiftCertificate.setSenderName(profile.firstName + ' ' +  profile.lastName);
+        createdGiftCertificate.setMessage(gCertificates[i].custom.gcMessage);
+        Transaction.commit();
+        var giftCertCode = createdGiftCertificate.giftCertificateCode;
+        COHelpers.sendGiftCertificateEmail(createdGiftCertificate, giftCertCode, req.locale.id);
+    }
+  }
+  // Custom Cartridge Code End
 
   /* ### Custom Adyen cartridge start ### */
   var cbEmitter = function cbEmitter(route) {

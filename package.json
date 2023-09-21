@@ -158,6 +158,10 @@
         {
           "alias": "adyen",
           "name": "int_adyen_SFRA"
+        },
+        {
+          "alias": "custom",
+          "name": "app_custom_sfra"
         }
       ]
     }

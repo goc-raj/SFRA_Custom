@@ -26,7 +26,7 @@ function submitGiftCertCode() {
             data: 'giftCertCode=' + $giftcertcode,
             success: function (data) {
                 if (data.error) {
-                    $('.coupon-error-message').show();
+                    $('.coupon-error-message').show().append(data.errorMessage);
                     $('#pmt').show();
                 } else {
                     $('.giftcert-message').empty().show().append(data.message);
@@ -34,10 +34,6 @@ function submitGiftCertCode() {
                         $('#pmt').hide();
                         // var paymentMethod = "<input type='hidden' class='form-control' name='${pdict.forms.billingForm.paymentMethod.htmlName}' value='GIFT_CERTIFICATE'>";
                         // $("#giftForm").prepend(paymentMethod);
-                        $('.shipping-total-cost').text(0.00);
-                        $('.tax-total').text(0.00);
-                        $('.sub-total').text(0.00);
-                        $('.grand-total-sum').text(0.00);
                     }
                 }
                 $.spinner().stop();

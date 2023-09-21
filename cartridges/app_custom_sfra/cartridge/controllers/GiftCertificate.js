@@ -68,156 +68,10 @@ server.post('BalanceResult', consentTracking.consent, function (req, res, next) 
     next();
 });
 
-server.get(
-    'Create',
-    consentTracking.consent,
-    function (req, res, next) {
-
-        var breadcrumbs = [
-            {
-                htmlValue: Resource.msg('global.home', 'common', null),
-                url: URLUtils.home().toString()
-            }
-        ];
-        var actionUrl = URLUtils.url('GiftCertificate-AddToCart');
-
-        res.render('/giftcertificate/createGift', {
-            breadcrumbs: breadcrumbs,
-            actionUrl: actionUrl
-        });
-        return next();
-    }
-);
-
-server.post('AddToCart', consentTracking.consent, function (req, res, next) {
-    var BasketMgr = require('dw/order/BasketMgr');
-    var Resource = require('dw/web/Resource');
-    var URLUtils = require('dw/web/URLUtils');
-    var Transaction = require('dw/system/Transaction');
-    var GiftCertificateLineItem = require('dw/order/GiftCertificateLineItem');
-    var CartModel = require('*/cartridge/models/cart');
-    var ProductLineItemsModel = require('*/cartridge/models/productLineItems');
-    var cartHelper = require('*/cartridge/scripts/cart/cartHelpers');
-    var basketCalculationHelpers = require('*/cartridge/scripts/helpers/basketCalculationHelpers');
-
-    var currentBasket = BasketMgr.getCurrentOrNewBasket();
-    var giftCertRecipient = req.form.giftCertTo;
-    var giftCertEmail = req.form.giftCertEmail;
-    var giftCertAmount = parseInt(req.form.giftCertAmount, 10);
-    var giftCertMessage;
-    req.form.giftCertMessage ? giftCertMessage = req.form.giftCertMessage : giftCertMessage = "";
-    var quantity;
-    var result;
-
-    if (currentBasket) {
-        Transaction.wrap(function () {
-            if (giftCertEmail && giftCertAmount) {
-                quantity = 1;
-                result = cartHelper.addGiftCertToCart(
-                    currentBasket,
-                    giftCertRecipient,
-                    giftCertEmail,
-                    giftCertAmount,
-                    giftCertMessage,
-                    quantity
-                );
-            } else {
-                res.render('/giftCertificate/giftCertificate');
-                next();
-            }
-            if (!result.error) {
-                cartHelper.ensureAllShipmentsHaveMethods(currentBasket);
-                basketCalculationHelpers.calculateTotals(currentBasket);
-            }
-        });
-    }
-
-    var quantityTotal = 1;
-
-    var cartModel = new CartModel(currentBasket);
-
-    var reportingURL = cartHelper.getReportingUrlAddToCart(currentBasket, result.error);
-
-    res.json({
-        reportingURL: reportingURL,
-        quantityTotal: 1,
-        message: result.message,
-        cart: cartModel,
-        newBonusDiscountLineItem: {},
-        error: result.error,
-        pliUUID: result.uuid,
-        minicartCountOfItems: Resource.msgf('minicart.count', 'common', null, quantityTotal)
-    });
-
-    next();
-});
-
-server.get('RemoveGiftCertLineItem', function (req, res, next) {
-    var BasketMgr = require('dw/order/BasketMgr');
-    var Resource = require('dw/web/Resource');
-    var Transaction = require('dw/system/Transaction');
-    var URLUtils = require('dw/web/URLUtils');
-    var CartModel = require('*/cartridge/models/cart');
-    var basketCalculationHelpers = require('*/cartridge/scripts/helpers/basketCalculationHelpers');
-
-    var currentBasket = BasketMgr.getCurrentBasket();
-
-    if (!currentBasket) {
-        res.setStatusCode(500);
-        res.json({
-            error: true,
-            redirectUrl: URLUtils.url('Cart-Show').toString()
-        });
-
-        return next();
-    }
-
-    var isGiftCertLineItemFound = false;
-
-    Transaction.wrap(function () {
-        if (req.querystring.uuid) {
-            var giftCertLineItems = currentBasket.getGiftCertificateLineItems();
-
-            for (var i = 0; i < giftCertLineItems.length; i++) {
-                var item = giftCertLineItems[i];
-
-                if ((item.UUID === req.querystring.uuid)) {
-                    var shipmentToRemove = item.shipment;
-                    currentBasket.removeGiftCertificateLineItem(item);
-                    if (shipmentToRemove.productLineItems.empty && !shipmentToRemove.default) {
-                        currentBasket.removeShipment(shipmentToRemove);
-                    }
-                    isGiftCertLineItemFound = true;
-                    break;
-                }
-            }
-        }
-        basketCalculationHelpers.calculateTotals(currentBasket);
-    });
-
-    if (isGiftCertLineItemFound) {
-        var basketModel = new CartModel(currentBasket);
-        var basketModelPlus = {
-            basket: basketModel
-        };
-        res.json(basketModelPlus);
-    } else {
-        res.setStatusCode(500);
-        res.json({ errorMessage: Resource.msg('error.cannot.remove.product', 'cart', null) });
-    }
-
-    return next();
-});
-
 server.get('Add', server.middleware.https, function(req, res, next) {
     var COHelpers = require('*/cartridge/scripts/checkout/checkoutHelpers');
     var BasketMgr = require('dw/order/BasketMgr');
     var Transaction = require('dw/system/Transaction');
-    var shippingHelper = require('*/cartridge/scripts/checkout/shippingHelpers');
-    var basketCalculationHelpers = require('*/cartridge/scripts/helpers/basketCalculationHelpers');
-    var Locale = require('dw/util/Locale');
-    var OrderModel = require('*/cartridge/models/order');
-    var TotalsModel = require('*/cartridge/models/totals');
 
     var giftCert = GiftCertificateMgr.getGiftCertificateByCode(req.querystring.giftCertCode);
 
@@ -261,31 +115,16 @@ server.get('Add', server.middleware.https, function(req, res, next) {
         var orderTotal = currentBasket.totalGrossPrice.getValue();
         if (orderTotal > giftCertBalanceValue) {
             flag = "less";
+            Transaction.begin();
+            currentBasket.custom.useGiftCard = "yes";
+            currentBasket.custom.gcCode = req.querystring.giftCertCode;
+            Transaction.commit();
         } else if (orderTotal < giftCertBalanceValue || orderTotal == giftCertBalanceValue) {
             flag = "more";
-            // var methodID = "007";
-            // var shipment = currentBasket.defaultShipment;
-            // var currentLocale = Locale.getLocale(req.locale.id);
-
             Transaction.begin();
             currentBasket.custom.useGiftCard = "no";
-            // shippingHelper.selectShippingMethod(shipment, methodID);
-            // basketCalculationHelpers.calculateTotals(currentBasket);
+            currentBasket.custom.gcCode = req.querystring.giftCertCode;
             Transaction.commit();
-
-            // var usingMultiShipping = req.session.privacyCache.get('usingMultiShipping');
-            // var allValid = COHelpers.ensureValidShipments(currentBasket);
-            // var orderModel = new OrderModel(
-            //     currentBasket,
-            //     {
-            //         customer: req.currentCustomer.raw,
-            //         usingMultiShipping: usingMultiShipping,
-            //         shippable: allValid,
-            //         countryCode: currentLocale.country,
-            //         containerView: 'basket'
-            //     }
-            // );
-            var totalsModel = new TotalsModel(currentBasket);
         }
 
     } else if (giftCertStatus === 0) {
@@ -296,7 +135,6 @@ server.get('Add', server.middleware.https, function(req, res, next) {
 
     res.json({
         error: false,
-        totals: totalsModel,
         status: statusCodes[giftCertStatus],
         balanceValue: giftCertBalanceValue,
         balanceCurrency: giftCertCurrency,
@@ -306,5 +144,62 @@ server.get('Add', server.middleware.https, function(req, res, next) {
 
     next();
 });
+
+server.get(
+    'ShowEgiftCardsForm',
+    server.middleware.https,
+    consentTracking.consent,
+    csrfProtection.generateToken,
+    function (req, res, next) {
+        var URLUtils = require('dw/web/URLUtils');
+        var productHelper = require('*/cartridge/scripts/helpers/productHelpers');
+        var eGiftCardsForm = server.forms.getForm('giftCards');
+        var params = req.querystring;
+        var eGiftCardEdit = params.eGiftCardEdit;
+        // if (eGiftCardEdit !== 'EGIFT_CARD') { // eslint-disable-next-line
+        // 	eGiftCardsForm.clear();
+        // }
+        res.render('giftcertificate/eGiftCardForm', {
+            productId: 'Gift_Certi_Form_Red',
+            addToCartUrl: URLUtils.url('Cart-AddProduct'),
+            eGiftCardsForm: eGiftCardsForm
+        });
+        next();
+    }
+);
+
+server.post(
+    'SaveGiftCard',
+    consentTracking.consent,
+    server.middleware.https,
+    consentTracking.consent,
+    csrfProtection.generateToken,
+    function (req, res, next) {
+        var BasketMgr = require('dw/order/BasketMgr');
+        var Transaction = require('dw/system/Transaction');
+        var basketCalculationHelpers = require('*/cartridge/scripts/helpers/basketCalculationHelpers');
+        var cartHelper = require('*/cartridge/scripts/cart/cartHelpers');
+
+        var productId = req.form.pid;
+        var currentBasket = BasketMgr.getCurrentBasket();
+        var productLineItems = currentBasket.getProductLineItems(productId);
+        var price = req.form.gcAmount;
+        var productLineItem = productLineItems[0];
+        Transaction.wrap(function () {
+            productLineItem.custom.gcRecipientName = req.form.gcRecipientName || '';
+            productLineItem.custom.gcRecipientEmail = req.form.gcRecipientEmail || '';
+            productLineItem.custom.gcMessage = req.form.gcMessage || '';
+            productLineItem.setPriceValue(25);
+            basketCalculationHelpers.calculateTotals(currentBasket);
+        });
+        var reportingURL = cartHelper.getReportingUrlAddToCart(currentBasket, false);
+
+        res.json({
+            reportingURL: reportingURL
+        });
+        next();
+
+    }
+);
 
 module.exports = server.exports();

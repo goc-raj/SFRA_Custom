@@ -1,0 +1,80 @@
+<iscomment> <iscontent compact="true"> </iscomment>
+
+<form id="giftcertificate-create" class="giftCardForm" action="${URLUtils.url('Cart-AddProduct')}" method="POST"
+    name="${pdict.eGiftCardsForm.htmlName}" >
+
+    <div class="form-group
+        <isif condition=" ${!!pdict.eGiftCardsForm.egiftcard.gcRecipientName.mandatory === true}">required</isif>">
+        <label class="form-control-label" for="giftcertificate-recipient">
+            ${Resource.msg('label.giftcertificate.recipient', 'giftcertificate', null)}
+        </label>
+        <input type="text" id="giftcertificate-recipient" class="form-control" name="gcRecipientName"
+            placeholder="${Resource.msg('placeholder.giftcertificate.recipient', 'giftcertificate', null)}"
+            autocomplete="off"
+            <isprint value=${pdict.eGiftCardsForm.egiftcard.gcRecipientName.attributes} encoding="off" />>
+        <div class="invalid-feedback"></div>
+    </div>
+
+    <div class="form-group
+        <isif condition="${!!pdict.eGiftCardsForm.egiftcard.gcRecipientEmail.mandatory == "true"}">required</isif>">
+        <label class="form-control-label"
+            for="giftcertificate-email">${Resource.msg('label.giftcertificate.email', 'giftcertificate', null)}
+        </label>
+        <input type="text" id="giftcertificate-email" class="form-control" name="gcRecipientEmail"
+            placeholder="${Resource.msg('placeholder.giftcertificate.email', 'giftcertificate', null)}"
+            autocomplete="off"
+            <isprint value=${pdict.eGiftCardsForm.egiftcard.gcRecipientEmail.attributes} encoding="off" />>
+        <div class="invalid-feedback"></div>
+    </div>
+    <div class="form-group
+        <isif condition="${!!pdict.eGiftCardsForm.egiftcard.gcAmount.mandatory == "true"}">required</isif>">
+        <label class="form-control-label"
+            for="giftcertificate-amount">${Resource.msg('label.giftcertificate.amount', 'giftcertificate', null)}
+        </label>
+        <input type="text" id="giftcertificate-amount" class="form-control" name="gcAmount"
+            placeholder="${Resource.msg('placeholder.giftcertificate.amount', 'giftcertificate', null)}"
+            autocomplete="off"
+            <isprint value=${pdict.eGiftCardsForm.egiftcard.gcAmount.attributes} encoding="off" />>
+        <div class="invalid-feedback"></div>
+    </div>
+    <div class="form-group
+         <isif condition="${!!pdict.eGiftCardsForm.egiftcard.gcMessage.mandatory == "true"}">required</isif>">
+        <label class="form-control-label"
+            for="giftcertificate-message">${Resource.msg('label.giftcertificate.message', 'giftcertificate', null)}
+        </label>
+        <input type="text" id="giftcertificate-message" class="form-control" name="gcMessage"
+            placeholder="${Resource.msg('placeholder.giftcertificate.message', 'giftcertificate', null)}"
+            autocomplete="off"
+            <isprint value=${pdict.eGiftCardsForm.egiftcard.gcMessage.attributes} encoding="off" />>
+        <div class="invalid-feedback"></div>
+    </div>
+
+    <iscomment> <div class="form-group">
+        <label class="form-control-label" for="giftcertificate-recipient">${Resource.msg('label.giftcertificate.recipient','giftcertificate',null)}</label>
+        <input type="text" id="giftcertificate-recipient" class="form-control" name="gcRecipientName" placeholder="${Resource.msg('placeholder.giftcertificate.recipient','giftcertificate',null)}" required>
+        <div class="invalid-feedback"></div>
+    </div>
+    <div class="form-group">
+        <label class="form-control-label" for="giftcertificate-email">${Resource.msg('label.giftcertificate.email','giftcertificate',null)}</label>
+        <input type="text" id="giftcertificate-email" class="form-control" name="gcRecipientEmail" placeholder="${Resource.msg('placeholder.giftcertificate.email','giftcertificate',null)}" required>
+        <div class="invalid-feedback"></div>
+    </div>
+    <div class="form-group">
+        <label class="form-control-label" for="giftcertificate-amount">${Resource.msg('label.giftcertificate.amount','giftcertificate',null)}</label>
+        <input type="text" id="giftcertificate-amount" class="form-control" name="gcAmount" placeholder="${Resource.msg('placeholder.giftcertificate.amount','giftcertificate',null)}" required>
+        <div class="invalid-feedback"></div>
+    </div>
+    <div class="form-group">
+        <label class="form-control-label" for="giftcertificate-message">${Resource.msg('label.giftcertificate.message','giftcertificate',null)}</label>
+        <input type="text" id="giftcertificate-message" class="form-control" name="gcMessage" placeholder="${Resource.msg('placeholder.giftcertificate.message','giftcertificate',null)}" required>
+        <div class="invalid-feedback"></div>
+    </div> </iscomment>
+
+    <input type="hidden" name="${pdict.csrf.tokenName}" value="${pdict.csrf.token}"/>
+    <input type="hidden" class="add-to-cart-url" value="${pdict.addToCartUrl}">
+    <input type="hidden" id="prodId" name="pid" value="${pdict.productId}">
+    <input type="hidden" name="quantity" value=1>
+    <button type="submit" class="btn btn-block btn-primary add-giftCert-to-cart">
+        ${Resource.msg('button.create.giftcertificate', 'giftcertificate', null)}
+    </button>
+</form>

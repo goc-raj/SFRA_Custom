@@ -14,6 +14,8 @@ var Status = require('dw/system/Status');
 var Resource = require('dw/web/Resource');
 var Site = require('dw/system/Site');
 var Transaction = require('dw/system/Transaction');
+var GiftCertificateMgr = require('dw/order/GiftCertificateMgr');
+var Money = require('dw/value/Money');
 
 var AddressModel = require('*/cartridge/models/address');
 var formErrors = require('*/cartridge/scripts/formErrors');
@@ -437,6 +439,41 @@ function calculatePaymentTransaction(currentBasket) {
     return result;
 }
 
+/**
+ * Updates the payment transaction amount
+ * @param {dw.order.Basket} currentBasket - The current basket
+ * @returns {Object} an error object
+ */
+function updatePaymentTransaction(currentBasket) {
+    var result = { error: false };
+
+    try {
+        // TODO: This function will need to account for gift certificates at a later date
+        Transaction.wrap(function () {
+            var paymentInstruments = currentBasket.paymentInstruments;
+
+            if (!paymentInstruments.length) {
+                return;
+            }
+
+            // Assuming that there is only one payment instrument used for the total order amount.
+            // TODO: Will have to rewrite this logic once we start supporting multiple payment instruments for same order
+            var giftCert = GiftCertificateMgr.getGiftCertificateByCode(currentBasket.custom.gcCode);
+            var giftCertBalanceValue = giftCert.getBalance().getValue();
+            var orderTotal = currentBasket.totalGrossPrice;
+            var updateTotal = orderTotal - giftCertBalanceValue;
+            var newTotal = new Money(updateTotal, currentBasket.totalGrossPrice.currencyCode);
+            var paymentInstrument = paymentInstruments[0];
+
+            orderTotal = orderTotal.subtract(newTotal);
+            paymentInstrument.paymentTransaction.setAmount(newTotal);
+        });
+    } catch (e) {
+        result.error = true;
+    }
+
+    return result;
+}
 
 /**
  * Validates payment
@@ -826,5 +863,6 @@ module.exports = {
     setGift: setGift,
     sendGiftCertificateEmail: sendGiftCertificateEmail,
     checkCurrencyOrderGiftCert: checkCurrencyOrderGiftCert,
-    checkSufficientGiftCertBalance: checkSufficientGiftCertBalance
+    checkSufficientGiftCertBalance: checkSufficientGiftCertBalance,
+    updatePaymentTransaction: updatePaymentTransaction
 };

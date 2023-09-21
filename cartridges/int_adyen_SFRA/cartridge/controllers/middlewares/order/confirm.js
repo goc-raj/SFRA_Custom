@@ -3,6 +3,8 @@
 var OrderMgr = require('dw/order/OrderMgr');
 var AdyenHelper = require('*/cartridge/scripts/util/adyenHelper');
 var AdyenConfigs = require('*/cartridge/scripts/util/adyenConfigs');
+var _require = require('*/cartridge/controllers/middlewares/checkout_services/adyenCheckoutServices'),
+  isNotAdyen = _require.isNotAdyen;
 
 // order-confirm is POST in SFRA v6.0.0. orderID and orderToken are contained in form.
 // This was a GET call with a querystring containing ID & token in earlier versions.
@@ -46,6 +48,9 @@ function confirm(req, res, next) {
   var orderToken = getOrderToken(req);
   if (orderId && orderToken) {
     var order = OrderMgr.getOrder(orderId, orderToken);
+    if (isNotAdyen(order)) {
+      return next();
+    }
     var paymentInstrument = order.getPaymentInstruments(AdyenHelper.getOrderMainPaymentInstrumentType(order))[0];
     if (AdyenHelper.getAdyenGivingConfig(order) && AdyenHelper.isAdyenGivingAvailable(paymentInstrument)) {
       handleAdyenGiving(req, res);

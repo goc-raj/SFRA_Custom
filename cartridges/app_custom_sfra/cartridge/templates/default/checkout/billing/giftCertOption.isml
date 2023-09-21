@@ -28,8 +28,7 @@
                 <div class="invalid-feedback" id="form-number-error"></div>
                 <div class="coupon-error">
                     <span class="coupon-missing-error" id="missingGiftCertCode" role="alert" style="display:none">${Resource.msg('error.code.missing', 'giftcertificate', null)}</span>
-                    <span class="coupon-error-message" id="invalidCouponCode" role="alert" style="display:none">${Resource.msg('error.not.found', 'giftcertificate', null)}</span>
-                    <span class="coupon-error-message" id="invalidUser" role="alert" style="display:none">${Resource.msg('error.authorization', 'giftcertificate', null)}</span>
+                    <span class="coupon-error-message" id="invalidCouponCode" role="alert" style="display:none"></span>
                 </div>
             </div>
 

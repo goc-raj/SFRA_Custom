@@ -1,8 +1,16 @@
 {
     "hooks": [
         {
+            "name": "app.payment.form.processor.basic_gift_certificate",
+            "script": "./cartridge/scripts/hooks/payment/processor/basic_gift_certificate.js"
+        },
+        {
             "name": "app.payment.processor.basic_gift_certificate",
             "script": "./cartridge/scripts/hooks/payment/processor/basic_gift_certificate.js"
+        },
+        {
+            "name": "dw.order.calculate",
+            "script": "./cartridge/scripts/hooks/cart/calculate.js"
         }
     ]
 }

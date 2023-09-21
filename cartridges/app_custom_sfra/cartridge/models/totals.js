@@ -144,13 +144,13 @@ function totals(lineItemContainer) {
         this.discounts = getDiscounts(lineItemContainer);
         this.discountsHtml = getDiscountsHtml(this.discounts);
 
-        var currentBasket = BasketMgr.getCurrentBasket();
-        if(currentBasket.custom && currentBasket.custom.useGiftCard === "no") {
-            this.subTotal = 0.00;
-            this.grandTotal = 0.00;
-            this.totalTax = 0.00;
-            this.totalShippingCost = 0.00;
-        }
+        // var currentBasket = BasketMgr.getCurrentBasket();
+        // if(currentBasket.custom && currentBasket.custom.useGiftCard === "no") {
+        //     this.subTotal = 0.00;
+        //     this.grandTotal = 0.00;
+        //     this.totalTax = 0.00;
+        //     this.totalShippingCost = 0.00;
+        // }
 
     } else {
         this.subTotal = '-';

@@ -31,6 +31,10 @@
         {
             "name": "app.experience.editmode",
             "script": "./cartridge/experience/hooks.js"
+        },
+        {
+            "name": "app.payment.processor.basic_gift_certificate",
+            "script": "../../../app_custom_sfra/cartridge/scripts/hooks/payment/processor/basic_gift_certificate.js"
         }
     ]
 }
