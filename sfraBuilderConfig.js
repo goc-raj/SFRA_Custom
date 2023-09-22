@@ -65,7 +65,6 @@ module.exports.cartridges = [
   "./cartridges/int_adyen_SFRA",
   "./cartridges/app_custom_sfra",
   "./cartridges/plugin_wishlists/cartridges/plugin_wishlists",
-  //"./cartridges/sfra_giftcert/cartridges/sfra_giftcert",
 ];
 
 /**

@@ -1,3 +1,7 @@
 {
-  "hooks": "./cartridge/scripts/hooks.json"
+  "hooks": "./cartridge/scripts/hooks.json",
+  "paths": {
+    "adyen": "../int_adyen_SFRA/",
+    "base": "../storefront-reference-architecture/cartridges/app_storefront_base/"
+  }
 }

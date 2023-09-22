@@ -185,16 +185,21 @@ function placeOrder(req, res, next) {
   // Custom Cartridge Code Start
   var products = order.getAllProductLineItems();
   var gCertificates = [];
-  var flag = false;
+  var gFormCert = [];
+  var flag = '';
   collections.forEach(products, function (item) {
       if (item.productID == 'Gift_Certi_Form_Red') {
-          flag = true;
+          flag = 'form';
           gCertificates.push(item);
       }
+      else if (item.productID == 'Gift_Certi_Form_Red') {
+        flag = 'variation';
+        gFormCert.push(item);
+      }
   });
+  var profile = req.currentCustomer.profile;
 
-  if (flag) {
-    var profile = req.currentCustomer.profile;
+  if (flag == 'form') {
     for (let i = 0; i < gCertificates.length; i++) {
         Transaction.begin();
         var createdGiftCertificate = GiftCertificateMgr.createGiftCertificate(gCertificates[i].priceValue);
@@ -206,6 +211,21 @@ function placeOrder(req, res, next) {
         Transaction.commit();
         var giftCertCode = createdGiftCertificate.giftCertificateCode;
         COHelpers.sendGiftCertificateEmail(createdGiftCertificate, giftCertCode, req.locale.id);
+    }
+  }
+
+  if (flag == 'variation') {
+    for (let i = 0; i < gFormCert.length; i++) {
+      Transaction.begin();
+      var createdGiftCertificate = GiftCertificateMgr.createGiftCertificate(gFormCert[i].priceValue);
+      createdGiftCertificate.setOrderNo(order.getCurrentOrderNo());
+      createdGiftCertificate.setRecipientEmail(profile.email);
+      createdGiftCertificate.setRecipientName(profile.firstName + ' ' +  profile.lastName);
+      createdGiftCertificate.setSenderName(profile.firstName + ' ' +  profile.lastName);
+      createdGiftCertificate.setMessage('');
+      Transaction.commit();
+      var giftCertCode = createdGiftCertificate.giftCertificateCode;
+      COHelpers.sendGiftCertificateEmail(createdGiftCertificate, giftCertCode, req.locale.id);
     }
   }
   // Custom Cartridge Code End
