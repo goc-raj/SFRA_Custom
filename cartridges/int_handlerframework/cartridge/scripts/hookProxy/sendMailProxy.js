@@ -16,7 +16,9 @@ var Logger = require('dw/system/Logger');
 /**
  * @type {SynchronousPromise}
  */
-var SynchronousPromise = require('synchronous-promise');
+var SynchronousPromise = require('~/cartridge/scripts/util/synchronous-promise');
+
+var renderTemplateHelper = require('*/cartridge/scripts/renderTemplateHelper');
 
 /**
  * Hook proxy for mail send action
@@ -70,6 +72,7 @@ function sendMail(args) {
                 args.params.CurrentCustomer = customer;
             }
 
+            emailData.params = params;
             var promise = SynchronousPromise.unresolved()
                 .then(function(data){
                     result = data;
@@ -78,11 +81,13 @@ function sendMail(args) {
                     result = data;
                 });
 
+            emailData.messageBody = renderTemplateHelper.getRenderedHtml(params, template);
+
             HookMgr.callHook(
                 hookID,
                 hookID.slice(hookID.lastIndexOf('.')+1),
                 promise,
-                args
+                emailData
             );
         }
     }

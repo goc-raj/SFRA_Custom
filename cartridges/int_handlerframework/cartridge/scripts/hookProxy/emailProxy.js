@@ -18,7 +18,7 @@ var Logger = require('dw/system/Logger');
 /**
  * @type {SynchronousPromise}
  */
-var SynchronousPromise = require('synchronous-promise');
+var SynchronousPromise = require('~/cartridge/scripts/util/synchronous-promise');
 
 /**
  * Hook proxy to be used with MC Email Connector send action
