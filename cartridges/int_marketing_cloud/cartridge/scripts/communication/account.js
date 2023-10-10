@@ -76,6 +76,23 @@ function passwordReset(promise, data) {
     return sendTrigger(hookPath + 'passwordReset', promise, data);
 }
 
+// Trigger Coupen Code
+function couponCode(promise, data) {
+    // if (data.params.containsKey('url')) { // SFRA compat
+    //     data.ResetPasswordLink = data.params.url;
+    // } else {
+    //     data.ResetPasswordLink = URLUtils.https('Account-SetNewPassword', 'Token', data.params.ResetPasswordToken);
+    // }
+    // if (!data.params.containsKey('ResetPasswordToken') && data.params.containsKey('passwordResetToken')) { // SFRA compat
+    //     data.params.ResetPasswordToken = data.params.passwordResetToken;
+    // }
+    if (!data.params.containsKey('Customer') && data.params.containsKey('resettingCustomer')) { // SFRA compat
+        data.params.Customer = data.params.resettingCustomer;
+    }
+    return sendTrigger(hookPath + 'couponCode', promise, data);
+}
+
+
 /**
  * Trigger account locked out notification
  * @param {SynchronousPromise} promise
@@ -158,6 +175,10 @@ function triggerDefinitions() {
         lockedOut: {
             description: 'Account Locked trigger',
             attributes: mergeCustomer([])
+        },
+        couponCode: {
+            description: 'Coupon Code trigger',
+            attributes: mergeCustomer([])
         }
     };
 }
@@ -172,7 +193,8 @@ module.exports = require('dw/system/HookMgr').callHook(
         updated: updated,
         passwordChanged: passwordChanged,
         passwordReset: passwordReset,
-        lockedOut: lockedOut
+        lockedOut: lockedOut,
+        couponCode: couponCode
     }
 );
 

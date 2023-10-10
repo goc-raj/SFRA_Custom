@@ -345,8 +345,8 @@ RestService.prototype = {
                 if (!empty(message._private.sendID)) {
                     svcPath = svcPath.replace('{key}', message._private.sendID);
                 } else if (!empty(message._private.sendKey)) {
-                    // svcPath = svcPath.replace('{key}', 'key:'+ message._private.sendKey);
-                    svcPath = svcPath.replace('{key}', 'key:'+ 69453);
+                    svcPath = svcPath.replace('{key}', 'key:'+ message._private.sendKey);
+                    // svcPath = svcPath.replace('{key}', 'key:'+ 69453);
                 }
 
                 svc.addHeader('Accept', 'application/json');

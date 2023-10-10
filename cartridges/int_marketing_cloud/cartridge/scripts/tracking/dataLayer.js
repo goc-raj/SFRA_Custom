@@ -221,7 +221,7 @@ function registerRoute(route) {
 function trackCached() {
     var mcInject = "<!-- Marketing Cloud Analytics - cached -->\n" +
         "<script type=\"text/javascript\">\n" +
-        "try {\n" +
+        "try {\nvar _etmc = [];\n" +
         "\t_etmc.push(['setOrgId', $dataLayer.setOrgId ]);\n" +
         "} catch (e) { console.error(e); }\n" +
         /**
@@ -470,7 +470,7 @@ function eventsOutput(requestData, cb) {
 
     var mcInject = "<!-- Marketing Cloud Analytics - noncached -->\n" +
         "<script type=\"text/javascript\">\n" +
-        "try {\n";
+        "try {\nvar _etmc = [];\n";
 
     for (var i in eventsArray) {
         eventsArray[i] = JSON.stringify(eventsArray[i]);

@@ -88,6 +88,10 @@ function sendEmail(emailObj, template, context) {
                 params.put('ContactUs', context);
                 hookID += 'customerService.contactUs';
                 break;
+            case emailTypes.couponCode:
+                params.put('CurrentCustomer', context.resettingCustomer);
+                hookID += 'account.couponCode';
+                break;
             default:
                 Logger.warn('Mail send hook called, but correct action undetermined, mail not sent as a result.');
                 break;

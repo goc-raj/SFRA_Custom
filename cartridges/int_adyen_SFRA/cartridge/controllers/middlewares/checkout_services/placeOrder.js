@@ -30,6 +30,7 @@ function placeOrder(req, res, next) {
   var addressHelpers = require('*/cartridge/scripts/helpers/addressHelpers');
   var GiftCertificateMgr = require('dw/order/GiftCertificateMgr');
   var collections = require('*/cartridge/scripts/util/collections');
+  var CouponMgr = require('dw/campaign/CouponMgr');
   var currentBasket = BasketMgr.getCurrentBasket();
   if (!currentBasket) {
     res.json({
@@ -227,6 +228,13 @@ function placeOrder(req, res, next) {
       var giftCertCode = createdGiftCertificate.giftCertificateCode;
       COHelpers.sendGiftCertificateEmail(createdGiftCertificate, giftCertCode, req.locale.id);
     }
+  }
+
+  var CustomerMgr = require('dw/customer/CustomerMgr');
+  var resettingCustomer = CustomerMgr.getCustomerByLogin(profile.email);
+  if (order.totalGrossPrice.getValue() > 700) {
+    var coupon = CouponMgr.getCouponByCode("Hrtyvbn");
+    var CoupenStatus = COHelpers.sendCouponOrderAmountEmail(profile, resettingCustomer, coupon);
   }
   // Custom Cartridge Code End
 

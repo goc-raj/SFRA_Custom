@@ -36,7 +36,7 @@ module.exports = {
     send: send,
     sendEmail: function (emailObj, template, context) {
         var hooksHelper = require('*/cartridge/scripts/helpers/hooks');
-        return hooksHelper('app.customer.email', 'sendEmail', [emailObj, template, context], send(emailObj, template, context));
+        return hooksHelper('app.customer.email', 'sendEmail', [emailObj, template, context], send);
     },
     // mailSend: function (emailObj, template, context) {
     //     var hooksHelper = require('*/cartridge/scripts/helpers/hooks');
@@ -49,7 +49,8 @@ module.exports = {
         orderConfirmation: 4,
         accountLocked: 5,
         accountEdited: 6,
-        giftCertificate: 7
+        giftCertificate: 7,
+        couponCode: 8
     },
     validateEmail: validateEmail
 };

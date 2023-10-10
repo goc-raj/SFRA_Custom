@@ -58,6 +58,11 @@ function lockedOut(promise, data) {
     return sendEmail(promise, data);
 }
 
+function couponCode(promise, data) {
+    Logger.debug('Handler hook {0} executed', 'account.coupon');
+    return sendEmail(promise, data);
+}
+
 module.exports = require('dw/system/HookMgr').callHook(
     'app.communication.handler.initialize',
     'initialize',
@@ -68,6 +73,7 @@ module.exports = require('dw/system/HookMgr').callHook(
         updated: updated,
         passwordChanged: passwordChanged,
         passwordReset: passwordReset,
-        lockedOut: lockedOut
+        lockedOut: lockedOut,
+        couponCode: couponCode
     }
 );

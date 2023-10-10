@@ -105,6 +105,10 @@
       "script": "~/cartridge/scripts/communication/order"
     },
     {
+      "name": "app.communication.account.couponCode",
+      "script": "~/cartridge/scripts/communication/account"
+    },
+    {
       "name": "app.customer.email",
       "script": "~/cartridge/scripts/hookProxy/emailProxy"
     }

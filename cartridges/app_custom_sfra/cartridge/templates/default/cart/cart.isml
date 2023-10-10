@@ -4,6 +4,14 @@
         assets.addCss('/css/cart.css');
     </isscript>
 
+    <script >
+        var _etmc = [];
+        _etmc.push(["setOrgId", "526002413"]);
+        _etmc.push(["trackCart", { "cart": [
+            {"item" : "${pdict.items[0]}", "quantity":  "pdict.items[0].quantity", "price" : "pdict.items[0].price", "unique_id" : "pdict.items[0].UUID" }
+        ]}]);
+    </script>
+
     <isif condition="${pdict.reportingURLs && pdict.reportingURLs.length}">
         <isinclude template="reporting/reportingUrls" />
     </isif>

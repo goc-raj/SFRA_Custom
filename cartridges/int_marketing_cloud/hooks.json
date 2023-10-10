@@ -21,6 +21,10 @@
       "script": "~/cartridge/scripts/communication/account"
     },
     {
+      "name": "app.communication.account.couponCode",
+      "script": "~/cartridge/scripts/communication/account"
+    },
+    {
       "name": "app.communication.account.lockedOut",
       "script": "~/cartridge/scripts/communication/account"
     },

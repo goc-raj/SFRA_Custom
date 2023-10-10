@@ -794,6 +794,36 @@ function sendGiftCertificateEmail(giftCert, giftCertCode, locale) {
     emailHelpers.sendEmail(emailObj, 'marketing/giftCertificateEmail', giftCertObject);
 }
 
+// Send Coupen Order Amount Email
+function sendCouponOrderAmountEmail(profile, resettingCustomer, coupon) {
+    var Resource = require('dw/web/Resource');
+    var URLUtils = require('dw/web/URLUtils');
+    var Site = require('dw/system/Site');
+    var emailHelpers = require('*/cartridge/scripts/helpers/emailHelpers');
+
+    // var passwordResetToken = getPasswordResetToken(resettingCustomer);
+    // var url = URLUtils.https('Account-SetNewPassword', 'Token', passwordResetToken);
+    var objectForEmail = {
+            // passwordResetToken: passwordResetToken,
+            firstName: profile.firstName,
+            lastName: profile.lastName,
+            // url: url,
+            coupon: coupon,
+            resettingCustomer: resettingCustomer
+       };
+
+    var emailObj = {
+            to: profile.email,
+            subject: Resource.msg('subject.profile.resetpassword.email', 'login', null),
+            from: Site.current.getCustomPreferenceValue('customerServiceEmail') || 'no-reply@salesforce.com',
+            type: emailHelpers.emailTypes.couponCode
+        };
+
+    var status = emailHelpers.sendEmail(emailObj, 'account/password/passwordResetEmail', objectForEmail);
+
+    return status;
+}
+
 /**
  * Check the order and the gift certificate payment method have the same currency
  * @param {dw.order.Basket} currentBasket - The current basket
@@ -864,5 +894,6 @@ module.exports = {
     sendGiftCertificateEmail: sendGiftCertificateEmail,
     checkCurrencyOrderGiftCert: checkCurrencyOrderGiftCert,
     checkSufficientGiftCertBalance: checkSufficientGiftCertBalance,
-    updatePaymentTransaction: updatePaymentTransaction
+    updatePaymentTransaction: updatePaymentTransaction,
+    sendCouponOrderAmountEmail: sendCouponOrderAmountEmail
 };
