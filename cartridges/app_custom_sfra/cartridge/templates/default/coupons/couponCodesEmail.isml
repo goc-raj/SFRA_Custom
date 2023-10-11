@@ -1,0 +1,24 @@
+<body>
+	<div style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; font-size: x-small; color: Black;">
+		<isif condition="${empty(pdict.firstName) || empty(pdict.lastName)}">
+			Dear Valued Customer,
+		<iselse>
+			Dear&nbsp;<isprint value="${pdict.firstName}">&nbsp;<isprint value="${pdict.lastName}">,
+		</isif>
+		<br/>
+		<br/>
+		A Coupon has been issued for you.
+		<br/>
+        <br/>
+		You can redeem your Coupon at <a href="${SHOP_URL}">our online store</a>.
+		<br/>
+		<br/>
+		Your Coupon Code is <b><isprint value="${pdict.coupon}"></b>.
+		<br/>
+		<br/>
+		Sincerely, 
+		<br/>
+		<br/>
+		Customer Support
+	</div>
+</body>

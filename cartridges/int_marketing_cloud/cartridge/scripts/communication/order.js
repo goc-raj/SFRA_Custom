@@ -15,7 +15,9 @@ const helpers = require('../util/helpers');
  * @returns {SynchronousPromise}
  */
 function confirmation(promise, data) {
-    data.orderAsXML = helpers.stripXmlNS( data.params.Order.getOrderExportXML(null, null) );
+    var temp = data.params.Order;
+    var tempXML = temp.getOrderExportXML();
+    data.orderAsXML = helpers.stripXmlNS(data.params.Order.getOrderExportXML());
     return sendTrigger(hookPath + 'confirmation', promise, data);
 }
 

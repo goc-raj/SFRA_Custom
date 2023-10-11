@@ -795,31 +795,30 @@ function sendGiftCertificateEmail(giftCert, giftCertCode, locale) {
 }
 
 // Send Coupen Order Amount Email
-function sendCouponOrderAmountEmail(profile, resettingCustomer, coupon) {
+function sendCouponOrderAmountEmail(profile, resettingCustomer, couponItem, coupon) {
     var Resource = require('dw/web/Resource');
     var URLUtils = require('dw/web/URLUtils');
     var Site = require('dw/system/Site');
     var emailHelpers = require('*/cartridge/scripts/helpers/emailHelpers');
 
-    // var passwordResetToken = getPasswordResetToken(resettingCustomer);
-    // var url = URLUtils.https('Account-SetNewPassword', 'Token', passwordResetToken);
     var objectForEmail = {
-            // passwordResetToken: passwordResetToken,
             firstName: profile.firstName,
             lastName: profile.lastName,
-            // url: url,
             coupon: coupon,
+            codeExpire: couponItem.redemptionLimitTimeFrame,
+            codeUse: couponItem.redemptionLimitPerCustomer,
+            codeAmount: couponItem.redemptionLimitPerCode,
             resettingCustomer: resettingCustomer
        };
 
     var emailObj = {
             to: profile.email,
-            subject: Resource.msg('subject.profile.resetpassword.email', 'login', null),
+            subject: Resource.msg('subject.profile.couponcode.email', 'account', null),
             from: Site.current.getCustomPreferenceValue('customerServiceEmail') || 'no-reply@salesforce.com',
             type: emailHelpers.emailTypes.couponCode
         };
 
-    var status = emailHelpers.sendEmail(emailObj, 'account/password/passwordResetEmail', objectForEmail);
+    var status = emailHelpers.sendEmail(emailObj, 'coupons/couponCodesEmail', objectForEmail);
 
     return status;
 }

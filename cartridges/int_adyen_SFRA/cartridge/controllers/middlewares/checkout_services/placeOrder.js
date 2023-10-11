@@ -230,11 +230,34 @@ function placeOrder(req, res, next) {
     }
   }
 
+  var OrderMgr = require('dw/order/OrderMgr');
+  var Order = require('dw/order/Order');
   var CustomerMgr = require('dw/customer/CustomerMgr');
+  var customerOrder;
+  var customerNo = req.currentCustomer.profile.customerNo;
+  var ONE_MONTHS_AGO = Date.now() - 2629746000;
+  var customerOrders = OrderMgr.searchOrders(
+      'customerNo={0} AND status!={1}',
+      'creationDate desc',
+      customerNo,
+      Order.ORDER_STATUS_REPLACED
+  );
+  var filtOrders = [];
+  while (customerOrders.hasNext()) {
+      customerOrder = customerOrders.next();
+      var orderTime = customerOrder.getCreationDate().getTime();
+      if (ONE_MONTHS_AGO < orderTime) {
+          filtOrders.push(customerOrder);
+      }
+  }
   var resettingCustomer = CustomerMgr.getCustomerByLogin(profile.email);
-  if (order.totalGrossPrice.getValue() > 700) {
-    var coupon = CouponMgr.getCouponByCode("Hrtyvbn");
-    var CoupenStatus = COHelpers.sendCouponOrderAmountEmail(profile, resettingCustomer, coupon);
+  if (filtOrders.length <= 4) {
+    var couponItem = CouponMgr.getCouponByCode("Hrtyvbn");
+    // var ciCode = couponItem.getNextCouponCode();
+    // var siteCoupons = CouponMgr.getCoupon("NewCoupon");
+    // var cCode = siteCoupons.getNextCouponCode();
+    var coupon = "Hrtyvbn";
+    var CoupenStatus = COHelpers.sendCouponOrderAmountEmail(profile, resettingCustomer, couponItem, coupon);
   }
   // Custom Cartridge Code End
 

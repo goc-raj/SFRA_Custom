@@ -53,6 +53,7 @@ server.replace(
         var COHelpers = require('*/cartridge/scripts/checkout/checkoutHelpers');
         var BasketMgr = require('dw/order/BasketMgr');
         var GiftCertificateMgr = require('dw/order/GiftCertificateMgr');
+        var CustomerMgr = require('dw/customer/CustomerMgr');
 
         var viewData = {};
         var paymentForm = server.forms.getForm('billing');

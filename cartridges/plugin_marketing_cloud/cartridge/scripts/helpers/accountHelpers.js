@@ -30,14 +30,7 @@ function sendPasswordResetEmail(email, resettingCustomer) {
         };
 
     var status1 = emailHelpers.sendEmail(emailObj, 'account/password/passwordResetEmail', objectForEmail);
-    // var status2 = emailHelpers.mailSend(emailObj, 'account/password/passwordResetEmail', objectForEmail);
 
-    // var status;
-    // if(status1.error || status2.error) {
-    //     status.error = true;
-    // } else {
-    //     status.error = false;
-    // }
     return status1;
 }
 

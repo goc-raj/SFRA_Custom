@@ -36,12 +36,8 @@ module.exports = {
     send: send,
     sendEmail: function (emailObj, template, context) {
         var hooksHelper = require('*/cartridge/scripts/helpers/hooks');
-        return hooksHelper('app.customer.email', 'sendEmail', [emailObj, template, context], send);
+        return hooksHelper('app.customer.email', 'sendEmail', [emailObj, template, context], send(emailObj, template, context));
     },
-    // mailSend: function (emailObj, template, context) {
-    //     var hooksHelper = require('*/cartridge/scripts/helpers/hooks');
-    //     return hooksHelper('app.mail.sendMail', 'sendMail', [emailObj, template, context], send);
-    // },
     emailTypes: {
         registration: 1,
         passwordReset: 2,
