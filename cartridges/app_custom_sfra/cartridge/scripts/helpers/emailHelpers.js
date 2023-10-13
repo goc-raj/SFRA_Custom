@@ -46,7 +46,8 @@ module.exports = {
         accountLocked: 5,
         accountEdited: 6,
         giftCertificate: 7,
-        couponCode: 8
+        couponCode: 8,
+        weeklyReview: 9
     },
     validateEmail: validateEmail
 };

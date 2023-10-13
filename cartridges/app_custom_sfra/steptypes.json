@@ -1,0 +1,37 @@
+{
+  "step-types": {
+    "script-module-step": [
+      {
+        "@type-id": "custom.WEEK-Order-Review",
+        "@supports-parallel-execution": "true",
+        "@supports-site-context": "true",
+        "@supports-organization-context": "false",
+        "description": "Review Weekly Orders",
+        "module": "app_custom_sfra/cartridge/scripts/jobs/reviewOrders.js",
+        "function": "sendReviewMail",
+        "transactional": "false",
+        "timeout-in-seconds": "900",
+        "parameters": {
+          "parameter": [
+          ]
+        },
+        "status-codes": {
+          "status": [
+            {
+              "@code": "ERROR",
+              "description": "Used when the step failed with an error."
+            },
+            {
+              "@code": "FINISHED",
+              "description": "Used when the step finished successfully."
+            },
+            {
+              "@code": "FINISHED_WITH_WARNINGS",
+              "description": "Used when the step finished with warnings."
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

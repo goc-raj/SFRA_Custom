@@ -1,0 +1,17 @@
+<body>
+	<div style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; font-size: x-small; color: Black;">
+		Dear Valued Merchant,
+		<br/>
+		<br/>
+		Total weekly orders are <b><isprint value="${pdict.filtOrdersCount}"></b>.
+		<br/>
+		<br/>
+		Total Amount are <b><isprint value="${pdict.filtOrdersAmount}"></b>.
+		<br/>
+		<br/>
+		Sincerely, 
+		<br/>
+		<br/>
+		Customer Support
+	</div>
+</body>
