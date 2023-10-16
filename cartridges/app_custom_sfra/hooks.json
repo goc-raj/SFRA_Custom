@@ -11,6 +11,10 @@
         {
             "name": "dw.order.calculate",
             "script": "./cartridge/scripts/hooks/cart/calculate.js"
+        },
+        {
+            "name": "dw.ocapi.shop.custom_object.modifyGETResponse",
+            "script": "./cartridge/scripts/hooks/customObjectsHooks.js"
         }
     ]
 }
